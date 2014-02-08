@@ -29,7 +29,7 @@ public class Utilities {
 
     public static final String PROPERTY_REG_ID = "registration_id";
     static String SENDER_ID = "580453532961";
-    static final String TAG = "AndroidAssassin";
+    public static final String TAG = "AndroidAssassin";
     static GoogleCloudMessaging gcm;
     static String regid;
 
