@@ -111,7 +111,7 @@ public class RegisterActivity extends Activity {
                     return;
                 }
                 mErrorText.setText("");
-                new RegisterAsyncTask(this).execute(mEmail.getText().toString(), mPassword.getText().toString(), gender,
+                new RegisterAsyncTask(RegisterActivity.this).execute(mEmail.getText().toString(), mPassword.getText().toString(), gender,
                 		mRace.getText().toString(), mFeet.getText().toString());
             }
         });
