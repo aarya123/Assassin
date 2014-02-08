@@ -7,14 +7,13 @@ import com.AssassinAndroid.Tools.Utilities;
 
 /**
  * User: AnubhawArya
- * Date: 2/7/14
- * Time: 10:50 PM
+ * Date: 2/8/14
+ * Time: 10:44 AM
  */
-public class LogInAsyncTask extends AsyncTask<String, Integer, String> {
-
+public class PowerUpAsyncTask extends AsyncTask<String, Integer, String> {
     Context context;
 
-    public LogInAsyncTask(Context context) {
+    public PowerUpAsyncTask(Context context) {
         this.context = context;
     }
 
