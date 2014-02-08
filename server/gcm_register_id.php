@@ -6,6 +6,14 @@
 	}
 	try {
 		$dbh = new PDO($conn_str, $user, $password);
+		$stmt = $dbh->prepare('SELECT count(user_name) FROM users WHERE user_id = :user_id');
+		$stmt->bindParam(':user_id', $_POST['user_id']);
+		$stmt->execute();
+		$user_id_exists = $stmt->fetchColumn() > 0;
+		if(!$user_id_exists) {
+			print json_encode(array('error' => 'user_id doesn\'t exist!'));
+			exit();
+		}
 		$stmt = $dbh->prepare('UPDATE users SET registration_id = :registration_id WHERE user_id = :user_id');
 		$stmt->bindParam(':registration_id', $_POST['registration_id']);
 		$stmt->bindParam(':user_id', $_POST['user_id']);
