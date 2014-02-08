@@ -1,9 +1,23 @@
 package com.AssassinAndroid.Tools;
 
+import java.io.BufferedInputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,6 +40,7 @@ import java.io.IOException;
 public class Utilities {
 
     private static ImageLoader mImageLoader;
+    private static HttpClient httpClient;
 
     public static final String PROPERTY_REG_ID = "registration_id";
     static String SENDER_ID = "580453532961";
@@ -46,6 +61,7 @@ public class Utilities {
     public static void init(Context context) {
         setupImageLoader(context);
         setupAlarms(context);
+        setupHttpClient();
         if (checkPlayServices(context)) {
             gcm = GoogleCloudMessaging.getInstance(context);
             regid = getRegistrationId(context);
@@ -67,6 +83,18 @@ public class Utilities {
 
     private static void setupAlarms(Context context) {
         new LocationAlarm().setLocationAlarm(context);
+    }
+    private static void setupHttpClient() {
+    	httpClient = AndroidHttpClient.newInstance("Assassin Client");
+    }
+    
+    public static JSONObject getResponse(String url, List<NameValuePair> params) throws Exception {
+    	HttpPost post = new HttpPost(url);
+    	post.setEntity(new UrlEncodedFormEntity(params));
+    	HttpResponse response = httpClient.execute(post);
+    	String content = new Scanner(new BufferedInputStream(response.getEntity().getContent())).useDelimiter("\\Z").next();
+    	JSONObject obj = new JSONObject(content);
+    	return obj;
     }
 
     public static boolean checkPlayServices(Context context) {
