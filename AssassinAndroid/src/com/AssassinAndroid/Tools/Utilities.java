@@ -13,7 +13,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,6 +23,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.AssassinAndroid.Activities.TargetActivity;
 import com.AssassinAndroid.Service.LocationAlarm;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,6 +50,8 @@ public class Utilities {
     public static final String TAG = "AndroidAssassin";
     static GoogleCloudMessaging gcm;
     static String regid;
+    public static final String PREFS_NAME = "prefs";
+    public static String userId;
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -86,13 +91,18 @@ public class Utilities {
     
     public static JSONObject getResponse(String url, List<NameValuePair> params) throws Exception {
     	HttpClient httpClient = AndroidHttpClient.newInstance("Assassin Client");
-    	HttpPost post = new HttpPost(url);
-    	post.setEntity(new UrlEncodedFormEntity(params));
-    	HttpResponse response = httpClient.execute(post);
-    	String content = new Scanner(new BufferedInputStream(response.getEntity().getContent())).useDelimiter("\\Z").next();
-    	Log.i("content", content);
-    	JSONObject obj = new JSONObject(content);
-    	return obj;
+    	try {
+	    	HttpPost post = new HttpPost(url);
+	    	post.setEntity(new UrlEncodedFormEntity(params));
+	    	HttpResponse response = httpClient.execute(post);
+	    	String content = new Scanner(new BufferedInputStream(response.getEntity().getContent())).useDelimiter("\\Z").next();
+	    	Log.i("content", content);
+	    	JSONObject obj = new JSONObject(content);
+	    	return obj;
+    	}
+    	finally {
+    		httpClient.getConnectionManager().shutdown();
+    	}
     }
 
     public static boolean checkPlayServices(Context context) {
@@ -178,5 +188,11 @@ public class Utilities {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
         editor.commit();
+    }
+    
+    public static void startTargetActivity(Context context) {
+    	Intent intent = new Intent(context, TargetActivity.class);
+		context.startActivity(intent);
+		
     }
 }
