@@ -38,7 +38,8 @@ public class LogInActivity extends Activity {
         SharedPreferences settings = getSharedPreferences(Utilities.PREFS_NAME, 0);
         if(settings.contains("user_id")) {
         	Log.i("LoginActivity", "already logged in!");
-        	Utilities.startTargetActivity(this, settings.getString("user_id", "invalid"));
+        	Utilities.userId = settings.getString("user_id", "invalid");
+        	Utilities.startTargetActivity(this);
         	finish();
         }
         setContentView(R.layout.login);

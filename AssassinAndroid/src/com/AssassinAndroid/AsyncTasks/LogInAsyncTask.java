@@ -73,10 +73,10 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     		return;
     	}
     	try {
-    		String userId = o.getString("ok");
+    		Utilities.userId = o.getString("ok");
     		SharedPreferences settings = context.getSharedPreferences(Utilities.PREFS_NAME, 0);
-    		settings.edit().putString("user_id", userId).commit();
-    		Utilities.startTargetActivity(context, userId);
+    		settings.edit().putString("user_id", Utilities.userId).commit();
+    		Utilities.startTargetActivity(context);
     	}
     	catch(JSONException ex) {
     		ex.printStackTrace();

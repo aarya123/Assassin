@@ -51,6 +51,7 @@ public class Utilities {
     static GoogleCloudMessaging gcm;
     static String regid;
     public static final String PREFS_NAME = "prefs";
+    public static String userId;
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -189,14 +190,9 @@ public class Utilities {
         editor.commit();
     }
     
-    public static void startTargetActivity(Context context, String userId) {
+    public static void startTargetActivity(Context context) {
     	Intent intent = new Intent(context, TargetActivity.class);
-		intent.putExtra("user_id", userId);
 		context.startActivity(intent);
 		
-    }
-    
-    public static String getUserId(Activity act) {
-    	return act.getIntent().getStringExtra("user_id");
     }
 }
