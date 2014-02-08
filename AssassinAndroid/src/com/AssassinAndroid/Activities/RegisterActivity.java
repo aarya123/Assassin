@@ -1,5 +1,7 @@
 package com.AssassinAndroid.Activities;
 
+import com.AssassinAndroid.AsyncTasks.RegisterAsyncTask;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -109,6 +111,8 @@ public class RegisterActivity extends Activity {
                     return;
                 }
                 mErrorText.setText("");
+                new RegisterAsyncTask(this).execute(mEmail.getText().toString(), mPassword.getText().toString(), gender,
+                		mRace.getText().toString(), mFeet.getText().toString());
             }
         });
     }

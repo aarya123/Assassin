@@ -17,7 +17,7 @@ public class LogInActivity extends Activity {
     Button mLogIn;
     View.OnClickListener mLogInClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            new LogInAsyncTask(LogInActivity.this).execute();
+            new LogInAsyncTask(LogInActivity.this).execute(mEmail.getText().toString(), mPassword.getText().toString());
         }
     };
     View.OnFocusChangeListener mFocusChangeListener= new View.OnFocusChangeListener() {

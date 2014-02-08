@@ -1,43 +1,28 @@
 package com.AssassinAndroid.AsyncTasks;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-
 import com.AssassinAndroid.Activities.TargetActivity;
 import com.AssassinAndroid.Tools.Utilities;
 
-/**
- * User: AnubhawArya
- * Date: 2/7/14
- * Time: 10:50 PM
- */
-public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
-    Context context;
+public class RegisterAsyncTask extends AsyncTask<String, Integer, JSONObject> {
+
+	Context context;
     private Exception e;
 
-    public LogInAsyncTask(Context context) {
+    public RegisterAsyncTask(Context context) {
         this.context = context;
         e = null;
     }
@@ -52,11 +37,18 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
             return null;
         String email = params[0];
         String password = params[1];
-        List<NameValuePair> loginParams = new ArrayList<NameValuePair>(2);
-    	loginParams.add(new BasicNameValuePair("email_address", email));
-    	loginParams.add(new BasicNameValuePair("password", password));
+        String sex = params[2];
+        String age = params[3];
+        String race = params[4];
+        String height = params[5];
+        List<NameValuePair> registerParams = new ArrayList<NameValuePair>(6);
+    	registerParams.add(new BasicNameValuePair("email_address", email));
+    	registerParams.add(new BasicNameValuePair("password", password));
+    	registerParams.add(new BasicNameValuePair("sex", sex));
+    	registerParams.add(new BasicNameValuePair("race", race));
+    	registerParams.add(new BasicNameValuePair("height", height));
     	try {
-    		return Utilities.getResponse("", loginParams);
+    		return Utilities.getResponse("", registerParams);
     	}
     	catch(Exception e) {
     		e.printStackTrace();
@@ -68,7 +60,7 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
 
     protected void onPostExecute(JSONObject o) {
     	if(o == null) {
-    		Toast.makeText(context, "Problem logging in!", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(context, "Problem registering!", Toast.LENGTH_SHORT).show();
     	}
     	try {
     		String userId = o.getString("ok");
@@ -78,8 +70,9 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     	}
     	catch(JSONException ex) {
     		ex.printStackTrace();
-    		Log.e("LoginAsyncTask.onPostExecute", o.optString("error"));
-    		Toast.makeText(context, "Problem logging in! Message " + o.optString("error"), Toast.LENGTH_SHORT).show();
+    		Log.e("RegisterAsyncTask.onPostExecute", o.optString("error"));
+    		Toast.makeText(context, "Problem registering! Message " + o.optString("error"), Toast.LENGTH_SHORT).show();
     	}
     }
+
 }
