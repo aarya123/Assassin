@@ -48,7 +48,7 @@ public class RegisterAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     	registerParams.add(new BasicNameValuePair("race", race));
     	registerParams.add(new BasicNameValuePair("height", height));
     	try {
-    		return Utilities.getResponse("", registerParams);
+    		return Utilities.getResponse(Utilities.API_URL + "register.php", registerParams);
     	}
     	catch(Exception e) {
     		e.printStackTrace();

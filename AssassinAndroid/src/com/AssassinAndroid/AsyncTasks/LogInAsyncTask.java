@@ -56,7 +56,7 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     	loginParams.add(new BasicNameValuePair("email_address", email));
     	loginParams.add(new BasicNameValuePair("password", password));
     	try {
-    		return Utilities.getResponse("", loginParams);
+    		return Utilities.getResponse(Utilities.API_URL + "login.php", loginParams);
     	}
     	catch(Exception e) {
     		e.printStackTrace();
@@ -69,6 +69,7 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     protected void onPostExecute(JSONObject o) {
     	if(o == null) {
     		Toast.makeText(context, "Problem logging in!", Toast.LENGTH_SHORT).show();
+    		return;
     	}
     	try {
     		String userId = o.getString("ok");
