@@ -1,9 +1,9 @@
 <?php
 	include_once('db.php');
-	if(!array_key_exists('user_name', $_POST) || !array_key_exists('password', $_POST) || !array_key_exists('email_address', $_POST) ||
+	if(!array_key_exists('password', $_POST) || !array_key_exists('email_address', $_POST) ||
 		!array_key_exists('sex', $_POST) || !array_key_exists('age', $_POST) || !array_key_exists('race', $_POST) ||
 		!array_key_exists('height', $_POST) || !array_key_exists('locations', $_POST)) {
-		print json_encode(array('error' => 'usage: post user_name, password, email_address, name, sex, age, race, height, locations (comma separated)'));
+		print json_encode(array('error' => 'usage: post password, email_address, name, sex, age, race, height, locations (comma separated)'));
 		exit();
 	}
 	function assert_value_unique($dbh, $field, $value) {
@@ -18,10 +18,8 @@
 	}
 	try {
 		$dbh = new PDO($conn_str, $user, $password);
-		assert_value_unique($dbh, 'user_name', $_POST['user_name']);
 		assert_value_unique($dbh, 'email_address', $_POST['email_address']);
-		$stmt = $dbh->prepare('INSERT INTO users (user_name, password_hash, email_address, sex, age, race, height) VALUES (:user_name, :password_hash, :email_address, :sex, :age, :race, :height)');
-		$stmt->bindParam(':user_name', $_POST['user_name']);
+		$stmt = $dbh->prepare('INSERT INTO users (password_hash, email_address, sex, age, race, height) VALUES (:password_hash, :email_address, :sex, :age, :race, :height)');
 		$stmt->bindParam(':password_hash', md5($_POST['password']));
 		$stmt->bindParam(':email_address', $_POST['email_address']);
 		$stmt->bindParam(':sex', $_POST['sex']);

@@ -6,7 +6,7 @@
 	}
 	try {
 		$dbh = new PDO($conn_str, $user, $password);
-		$stmt = $dbh->prepare('SELECT count(user_name) FROM users WHERE user_id = :user_id');
+		$stmt = $dbh->prepare('SELECT count(user_id) FROM users WHERE user_id = :user_id');
 		$stmt->bindParam(':user_id', $_POST['user_id']);
 		$stmt->execute();
 		$user_id_exists = $stmt->fetchColumn() > 0;
