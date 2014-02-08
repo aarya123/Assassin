@@ -36,11 +36,9 @@ import com.AssassinAndroid.Tools.Utilities;
 public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
 
     Context context;
-    private Exception e;
 
     public LogInAsyncTask(Context context) {
         this.context = context;
-        e = null;
     }
 
     protected void onPreExecute() {
@@ -61,7 +59,6 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     	}
     	catch(Exception e) {
     		e.printStackTrace();
-    		this.e = e;
     		return null;
     	}
     	
@@ -74,7 +71,7 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     	}
     	try {
     		Utilities.userId = o.getString("ok");
-    		SharedPreferences settings = context.getSharedPreferences(Utilities.PREFS_NAME, 0);
+    		SharedPreferences settings = Utilities.getSharedPreferences(context);
     		settings.edit().putString("user_id", Utilities.userId).commit();
     		Utilities.startTargetActivity(context);
     	}

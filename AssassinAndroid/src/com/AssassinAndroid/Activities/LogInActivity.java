@@ -1,6 +1,7 @@
 package com.AssassinAndroid.Activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +36,7 @@ public class LogInActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences settings = getSharedPreferences(Utilities.PREFS_NAME, 0);
+        SharedPreferences settings = Utilities.getSharedPreferences(this);
         if(settings.contains("user_id")) {
         	Log.i("LoginActivity", "already logged in!");
         	Utilities.userId = settings.getString("user_id", "invalid");
@@ -49,5 +50,11 @@ public class LogInActivity extends Activity {
         mLogIn.setOnClickListener(mLogInClickListener);
         mEmail.setOnFocusChangeListener(mFocusChangeListener);
         mPassword.setOnFocusChangeListener(mFocusChangeListener);
+        findViewById(R.id.mRegister).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(LogInActivity.this, RegisterActivity.class);
+                LogInActivity.this.startActivity(intent);
+            }
+        });
     }
 }

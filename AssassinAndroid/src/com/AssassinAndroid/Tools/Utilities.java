@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 import com.AssassinAndroid.Activities.TargetActivity;
 import com.AssassinAndroid.Service.LocationAlarm;
 import com.google.android.gms.common.ConnectionResult;
@@ -22,6 +20,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -36,7 +35,7 @@ import java.util.Scanner;
  */
 public class Utilities {
 
-	public static final String API_URL = "http://54.201.183.199/";
+    public static final String API_URL = "http://54.201.183.199/";
     private static ImageLoader mImageLoader;
 
     public static final String PROPERTY_REG_ID = "registration_id";
@@ -44,7 +43,6 @@ public class Utilities {
     public static final String TAG = "AndroidAssassin";
     static GoogleCloudMessaging gcm;
     static String regid;
-    public static final String PREFS_NAME = "prefs";
     public static String userId;
 
     public static boolean isNetworkAvailable(Context context) {
@@ -81,21 +79,20 @@ public class Utilities {
     private static void setupAlarms(Context context) {
         new LocationAlarm().setLocationAlarm(context);
     }
-    
+
     public static JSONObject getResponse(String url, List<NameValuePair> params) throws Exception {
-    	HttpClient httpClient = AndroidHttpClient.newInstance("Assassin Client");
-    	try {
-	    	HttpPost post = new HttpPost(url);
-	    	post.setEntity(new UrlEncodedFormEntity(params));
-	    	HttpResponse response = httpClient.execute(post);
-	    	String content = new Scanner(new BufferedInputStream(response.getEntity().getContent())).useDelimiter("\\Z").next();
-	    	Log.i("content", content);
-	    	JSONObject obj = new JSONObject(content);
-	    	return obj;
-    	}
-    	finally {
-    		httpClient.getConnectionManager().shutdown();
-    	}
+        HttpClient httpClient = new DefaultHttpClient();
+        try {
+            HttpPost post = new HttpPost(url);
+            post.setEntity(new UrlEncodedFormEntity(params));
+            HttpResponse response = httpClient.execute(post);
+            String content = new Scanner(new BufferedInputStream(response.getEntity().getContent())).useDelimiter("\\Z").next();
+            Log.i("content", content);
+            JSONObject obj = new JSONObject(content);
+            return obj;
+        } finally {
+            httpClient.getConnectionManager().shutdown();
+        }
     }
 
     public static boolean checkPlayServices(Context context) {
@@ -103,7 +100,7 @@ public class Utilities {
     }
 
     private static String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGCMPreferences(context);
+        final SharedPreferences prefs = getSharedPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.isEmpty()) {
             Log.i(TAG, "Registration not found.");
@@ -113,10 +110,16 @@ public class Utilities {
     }
 
 
-    private static SharedPreferences getGCMPreferences(Context context) {
+    public static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(TargetActivity.class.getSimpleName(), Context.MODE_PRIVATE);
     }
 
+    /**
+     * Registers the application with GCM servers asynchronously.
+     * <p/>
+     * Stores the registration ID and app versionCode in the application's
+     * shared preferences.
+     */
     private static void registerInBackground(final Context context) {
         new AsyncTask() {
             protected Object doInBackground(Object[] params) {
@@ -151,20 +154,28 @@ public class Utilities {
         }.execute(null, null, null);
     }
 
+
     private static void sendRegistrationIdToBackend() {
         //TODO Send to website
     }
 
+    /**
+     * Stores the registration ID and app versionCode in the application's
+     * {@code SharedPreferences}.
+     *
+     * @param context application's context.
+     * @param regId   registration ID
+     */
     private static void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGCMPreferences(context);
+        final SharedPreferences prefs = getSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
         editor.commit();
     }
-    
+
     public static void startTargetActivity(Context context) {
-    	Intent intent = new Intent(context, TargetActivity.class);
-		context.startActivity(intent);
-		
+        Intent intent = new Intent(context, TargetActivity.class);
+        context.startActivity(intent);
+
     }
 }
