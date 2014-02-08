@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -73,9 +74,9 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
     	}
     	try {
     		String userId = o.getString("ok");
-    		Intent intent = new Intent(context, TargetActivity.class);
-    		intent.putExtra("user_id", userId);
-    		context.startActivity(intent);
+    		SharedPreferences settings = context.getSharedPreferences(Utilities.PREFS_NAME, 0);
+    		settings.edit().putString("user_id", userId).commit();
+    		Utilities.startTargetActivity(context, userId);
     	}
     	catch(JSONException ex) {
     		ex.printStackTrace();

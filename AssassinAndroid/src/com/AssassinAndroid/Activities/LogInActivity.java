@@ -1,11 +1,15 @@
 package com.AssassinAndroid.Activities;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.AssassinAndroid.AsyncTasks.LogInAsyncTask;
+import com.AssassinAndroid.Tools.Utilities;
 
 /**
  * User: AnubhawArya
@@ -31,6 +35,12 @@ public class LogInActivity extends Activity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings = getSharedPreferences(Utilities.PREFS_NAME, 0);
+        if(settings.contains("user_id")) {
+        	Log.i("LoginActivity", "already logged in!");
+        	Utilities.startTargetActivity(this, settings.getString("user_id", "invalid"));
+        	finish();
+        }
         setContentView(R.layout.login);
         mEmail = (EditText) findViewById(R.id.mEmail);
         mPassword = (EditText) findViewById(R.id.mPassword);
