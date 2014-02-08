@@ -42,6 +42,6 @@
 		}
 	}
 	catch(PDOException $e) {
-		print $e->getMessage();
+		print json_encode(array('error' => '$e->getMessage()'));
 	}
 ?>
