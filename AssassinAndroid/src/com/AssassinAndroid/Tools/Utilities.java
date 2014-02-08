@@ -39,8 +39,8 @@ import java.io.IOException;
  */
 public class Utilities {
 
+	public static final String API_URL = "http://54.201.183.199/";
     private static ImageLoader mImageLoader;
-    private static HttpClient httpClient;
 
     public static final String PROPERTY_REG_ID = "registration_id";
     static String SENDER_ID = "580453532961";
@@ -61,7 +61,6 @@ public class Utilities {
     public static void init(Context context) {
         setupImageLoader(context);
         setupAlarms(context);
-        setupHttpClient();
         if (checkPlayServices(context)) {
             gcm = GoogleCloudMessaging.getInstance(context);
             regid = getRegistrationId(context);
@@ -84,15 +83,14 @@ public class Utilities {
     private static void setupAlarms(Context context) {
         new LocationAlarm().setLocationAlarm(context);
     }
-    private static void setupHttpClient() {
-    	httpClient = AndroidHttpClient.newInstance("Assassin Client");
-    }
     
     public static JSONObject getResponse(String url, List<NameValuePair> params) throws Exception {
+    	HttpClient httpClient = AndroidHttpClient.newInstance("Assassin Client");
     	HttpPost post = new HttpPost(url);
     	post.setEntity(new UrlEncodedFormEntity(params));
     	HttpResponse response = httpClient.execute(post);
     	String content = new Scanner(new BufferedInputStream(response.getEntity().getContent())).useDelimiter("\\Z").next();
+    	Log.i("content", content);
     	JSONObject obj = new JSONObject(content);
     	return obj;
     }

@@ -1,5 +1,5 @@
 <?php
-	$user = 'bm';
-	$password = 'D8UJMCznG6EreRYV';
+	$user = 'root';
+	$password = 'root';
 	$conn_str='mysql:host=localhost;dbname=bm';
 ?>
