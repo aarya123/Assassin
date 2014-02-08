@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.AssassinAndroid.AsyncTasks.PowerUpAsyncTask;
 import com.AssassinAndroid.Tools.CircleBitmapDisplayer;
 import com.AssassinAndroid.Tools.Utilities;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -18,12 +19,20 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
  * Date: 2/8/14
  * Time: 12:12 AM
  */
-public class Target extends Activity {
-    ImageView mTargetImage;
+public class TargetActivity extends Activity {
+    ImageView mTargetImage, mRadar, mInvisibility;
     TextView mName, mSex, mRace, mHeight, mAge, mLocation, mFreqLocs;
     Button mKill;
     private static final int CAMERA_REQUEST = 1888;
-
+    View.OnClickListener mPowerUpOnClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            v.setVisibility(View.GONE);
+            if (v == mRadar)
+                new PowerUpAsyncTask(TargetActivity.this).execute("0");
+            else if (v == mInvisibility)
+                new PowerUpAsyncTask(TargetActivity.this).execute("1");
+        }
+    };
     View.OnClickListener mKillOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -36,15 +45,20 @@ public class Target extends Activity {
         setContentView(R.layout.target);
         mTargetImage = (ImageView) findViewById(R.id.mTargetImage);
         mName = (TextView) findViewById(R.id.mName);
-        mSex= (TextView) findViewById(R.id.mSex);
+        mSex = (TextView) findViewById(R.id.mSex);
         mRace = (TextView) findViewById(R.id.mRace);
         mHeight = (TextView) findViewById(R.id.mHeight);
         mAge = (TextView) findViewById(R.id.mAge);
         mLocation = (TextView) findViewById(R.id.mLocation);
         mFreqLocs = (TextView) findViewById(R.id.mFreqLocs);
         mKill = (Button) findViewById(R.id.mKill);
+        mRadar = (ImageView) findViewById(R.id.mRadar);
+        mInvisibility = (ImageView) findViewById(R.id.mInvisibility);
         mKill.setOnClickListener(mKillOnClickListener);
-        Utilities.getImageLoader(this).displayImage("drawable://" + R.drawable.ezio, mTargetImage,
+        mRadar.setOnClickListener(mPowerUpOnClickListener);
+        mInvisibility.setOnClickListener(mPowerUpOnClickListener);
+        Utilities.init(this);
+        Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage,
                 new DisplayImageOptions.Builder().displayer(new CircleBitmapDisplayer()).build());
     }
 

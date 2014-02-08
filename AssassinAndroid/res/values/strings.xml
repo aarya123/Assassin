@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">AssassinAndroid</string>
+	<string name="gender_prompt">Gender</string>
+
+	<string-array name="gender_array">
+		<item>Male</item>
+		<item>Female</item>
+	</string-array>
 </resources>
