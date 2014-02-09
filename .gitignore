@@ -27,3 +27,20 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+#CMake files
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+
+#Compiled files
+Compare
+
+#Pictures
+test_images
+photos
+
+#Generated Training Profiles
+user_profiles
