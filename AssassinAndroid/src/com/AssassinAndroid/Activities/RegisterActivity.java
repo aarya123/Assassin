@@ -17,7 +17,7 @@ import android.widget.*;
 public class RegisterActivity extends Activity {
 
     private static final int CAMERA_REQUEST = 1888;
-    EditText mEmail, mPassword, mConfirmPassword, mAge, mRace, mFeet, mInches;
+    EditText mEmail, mPassword, mConfirmPassword, mAge, mRace, mFeet, mInches, mLocation;
     TextView mErrorText;
     RadioButton mMale, mFemale;
     ImageView mImageOne, mImageTwo, mImageThree;
@@ -46,6 +46,7 @@ public class RegisterActivity extends Activity {
         mImageOne = (ImageView) findViewById(R.id.mImageOne);
         mImageTwo = (ImageView) findViewById(R.id.mImageTwo);
         mImageThree = (ImageView) findViewById(R.id.mImageThree);
+        mLocation = (EditText) findViewById(R.id.mLocation);
         mImageOne.setTag(false);
         mImageTwo.setTag(false);
         mImageThree.setTag(false);
@@ -53,7 +54,9 @@ public class RegisterActivity extends Activity {
         mImageLayout.setOnClickListener(mImageOnClickListener);
         findViewById(R.id.mRegister).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String email = "", password = "", race = "", gender = "";
+                String email = "b@b.b", password = "b", race = "b", gender = "Male", location = "b";
+                int age = 123, feet = 12, inches = 21;
+                /*String email = "", password = "", race = "", gender = "",location="";
                 int age, feet, inches;
                 if (mEmail.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
                     email = mEmail.getText().toString();
@@ -88,6 +91,12 @@ public class RegisterActivity extends Activity {
                     mErrorText.setText("Invalid Race");
                     return;
                 }
+                if (!mLocation.getText().toString().equals(""))
+                    location = mLocation.getText().toString();
+                else {
+                    mErrorText.setText("Invalid Location");
+                    return;
+                }
                 if (!mFeet.getText().toString().equals(""))
                     feet = Integer.parseInt(mFeet.getText().toString());
                 else {
@@ -103,16 +112,15 @@ public class RegisterActivity extends Activity {
                 if (one == null) {
                     mErrorText.setText("Need photo #1");
                     return;
-                }else if (two == null) {
+                } else if (two == null) {
                     mErrorText.setText("Need photo #2");
                     return;
-                }else if (three == null) {
+                } else if (three == null) {
                     mErrorText.setText("Need photo #3");
                     return;
-                }
+                }*/
                 mErrorText.setText("");
-                new RegisterAsyncTask(RegisterActivity.this).execute(mEmail.getText().toString(), mPassword.getText().toString(), gender,
-                		mRace.getText().toString(), mFeet.getText().toString());
+                new RegisterAsyncTask(RegisterActivity.this).execute(email, password, gender, age + "", race, (feet * 12 + inches) + "", one, two, three, location);
             }
         });
     }

@@ -73,6 +73,12 @@
 				android:id="@+id/mRace"
 				android:layout_gravity="center_horizontal"
 				android:hint="Race"/>
+		<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/mLocation"
+				android:layout_gravity="center_horizontal"
+				android:hint="A place you're usually at"/>
 		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"

@@ -25,23 +25,23 @@ public class LogInActivity extends Activity {
             new LogInAsyncTask(LogInActivity.this).execute(mEmail.getText().toString(), mPassword.getText().toString());
         }
     };
-    View.OnFocusChangeListener mFocusChangeListener= new View.OnFocusChangeListener() {
+    View.OnFocusChangeListener mFocusChangeListener = new View.OnFocusChangeListener() {
         public void onFocusChange(View v, boolean hasFocus) {
-            if(hasFocus)
-                ((EditText)v).setHint("");
+            if (hasFocus)
+                ((EditText) v).setHint("");
             else
-                ((EditText)v).setHint(v==mEmail?"Email":"Password");
+                ((EditText) v).setHint(v == mEmail ? "Email" : "Password");
         }
     };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences settings = Utilities.getSharedPreferences(this);
-        if(settings.contains("user_id")) {
-        	Log.i("LoginActivity", "already logged in!");
-        	Utilities.userId = settings.getString("user_id", "invalid");
-        	Utilities.startTargetActivity(this);
-        	finish();
+        if (settings.contains("user_id")) {
+            Log.i("LoginActivity", "already logged in!");
+            Utilities.userId = settings.getString("user_id", "invalid");
+            Utilities.startTargetActivity(this);
+            finish();
         }
         setContentView(R.layout.login);
         mEmail = (EditText) findViewById(R.id.mEmail);
