@@ -60,7 +60,6 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
             e.printStackTrace();
             return null;
         }
-
     }
 
     protected void onPostExecute(JSONObject o) {

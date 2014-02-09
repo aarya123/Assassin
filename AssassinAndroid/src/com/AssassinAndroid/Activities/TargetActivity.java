@@ -30,7 +30,7 @@ import java.util.Date;
  */
 public class TargetActivity extends Activity {
 
-    public static ImageView mRadar, mInvisibility,mTargetImage;
+    public static ImageView mRadar, mInvisibility, mTargetImage;
     public static TextView mName, mSex, mRace, mHeight, mAge, mLocation;
     public static ArrayList<String> imageURLs = new ArrayList<String>();
     Button mKill;
@@ -50,6 +50,8 @@ public class TargetActivity extends Activity {
                 editor.putLong(Utilities.INVISIBILITY, new Date().getTime());
             }
             editor.commit();
+            if (mRadar.getVisibility() == mInvisibility.getVisibility() && mInvisibility.getVisibility() == View.GONE)
+                findViewById(R.id.mPowerUpText).setVisibility(View.GONE);
         }
     };
     View.OnClickListener mKillOnClickListener = new View.OnClickListener() {
@@ -82,7 +84,7 @@ public class TargetActivity extends Activity {
         public void onClick(View v) {
             if (imageURLs.size() > 0)
                 Utilities.getImageLoader()
-                        .displayImage(imageURLs.get(++imageUrlIterator % imageURLs.size()), mTargetImage,Utilities.circleOptions);
+                        .displayImage(imageURLs.get(++imageUrlIterator % imageURLs.size()), mTargetImage, Utilities.circleOptions);
         }
     };
 
@@ -106,7 +108,7 @@ public class TargetActivity extends Activity {
         mTargetImage.setOnClickListener(mTargetOnClickListener);
         Utilities.init(this);
         new TargetAsyncTask(this).execute("get");
-        Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage,Utilities.circleOptions);
+        Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage, Utilities.circleOptions);
         setupMap();
         if (Utilities.getSharedPreferences(this).contains(Utilities.RADAR)) {
             if (new Date().getTime() - Utilities.getSharedPreferences(this).getLong(Utilities.RADAR, 0) > 86400000 * 4)
