@@ -2,6 +2,7 @@ package com.AssassinAndroid.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +22,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import java.util.Date;
+
 /**
  * User: AnubhawArya
  * Date: 2/8/14
@@ -37,10 +40,16 @@ public class TargetActivity extends Activity {
     View.OnClickListener mPowerUpOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             v.setVisibility(View.GONE);
-            if (v == mRadar)
+            SharedPreferences prefs = Utilities.getSharedPreferences(TargetActivity.this);
+            SharedPreferences.Editor editor = prefs.edit();
+            if (v == mRadar) {
                 new PowerUpAsyncTask(TargetActivity.this).execute("0");
-            else if (v == mInvisibility)
+                editor.putLong(Utilities.RADAR, new Date().getTime());
+            } else if (v == mInvisibility) {
                 new PowerUpAsyncTask(TargetActivity.this).execute("1");
+                editor.putLong(Utilities.INVISIBILITY, new Date().getTime());
+            }
+            editor.commit();
         }
     };
     View.OnClickListener mKillOnClickListener = new View.OnClickListener() {
@@ -89,6 +98,20 @@ public class TargetActivity extends Activity {
         Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage,
                 new DisplayImageOptions.Builder().displayer(new CircleBitmapDisplayer()).build());
         setupMap();
+        if (Utilities.getSharedPreferences(this).contains(Utilities.RADAR)) {
+            if (new Date().getTime() - Utilities.getSharedPreferences(this).getLong(Utilities.RADAR, 0) > 86400000 * 4)
+                Utilities.getSharedPreferences(this).edit().remove(Utilities.RADAR).commit();
+            else
+                mRadar.setVisibility(View.GONE);
+        }
+        if (Utilities.getSharedPreferences(this).contains(Utilities.INVISIBILITY)) {
+            if (new Date().getTime() - Utilities.getSharedPreferences(this).getLong(Utilities.INVISIBILITY, 0) > 86400000 * 3)
+                Utilities.getSharedPreferences(this).edit().remove(Utilities.INVISIBILITY).commit();
+            else
+                mInvisibility.setVisibility(View.GONE);
+        }
+        if (mRadar.getVisibility() == mInvisibility.getVisibility() && mInvisibility.getVisibility() == View.GONE)
+            findViewById(R.id.mPowerUpText).setVisibility(View.GONE);
     }
 
     private void setupMap() {

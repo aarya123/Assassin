@@ -47,6 +47,8 @@ public class Utilities {
     static String regid;
     public static String userId;
     private static boolean initialized = false;
+    public static final String RADAR = "RADAR";
+    public static final String INVISIBILITY = "INVISIBILITY";
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

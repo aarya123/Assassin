@@ -63,13 +63,13 @@ public class LocationAlarm extends BroadcastReceiver {
         if (bestLocation != null)
             Log.d(Utilities.TAG, "(" + bestLocation.getLatitude() + ", " + bestLocation.getLongitude() + ")");
         else
-            Toast.makeText(context, "Location not found :(", Toast.LENGTH_SHORT).show();
+            Log.d(Utilities.TAG, "Location not found :(");
     }
 
     public static void setLocationAlarm(Context context) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, LocationAlarm.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 1234, i, 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 5/*/300*/, pi); // Millisec * Second * Minute
+        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 5, pi); // Millisec * Second * Minute
     }
 }
