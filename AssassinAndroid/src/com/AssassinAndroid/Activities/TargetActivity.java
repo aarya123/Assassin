@@ -15,8 +15,10 @@ import android.widget.TextView;
 import com.AssassinAndroid.AsyncTasks.PowerUpAsyncTask;
 import com.AssassinAndroid.Tools.CircleBitmapDisplayer;
 import com.AssassinAndroid.Tools.Utilities;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 /**
@@ -91,10 +93,26 @@ public class TargetActivity extends Activity {
 
     private void setupMap() {
         map.setMyLocationEnabled(true);
-        map.getUiSettings().setMyLocationButtonEnabled(true);
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 10, 10, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 10, 10, mLocationListener);
+        Location nLoc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location gLoc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (gLoc != null && nLoc != null) {
+            if (gLoc.getAccuracy() > nLoc.getAccuracy()) {
+                LatLng mLatLng = new LatLng(gLoc.getLatitude(), gLoc.getLongitude());
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+            } else {
+                LatLng mLatLng = new LatLng(nLoc.getLatitude(), nLoc.getLongitude());
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+            }
+        } else if (gLoc == null && nLoc != null) {
+            LatLng mLatLng = new LatLng(nLoc.getLatitude(), nLoc.getLongitude());
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+        } else if (nLoc == null && gLoc != null) {
+            LatLng mLatLng = new LatLng(gLoc.getLatitude(), gLoc.getLongitude());
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

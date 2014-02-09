@@ -34,7 +34,6 @@ public class LocationAlarm extends BroadcastReceiver {
         wl.acquire();
         checkGSM(context, intent);
         doWork(context);
-
         wl.release();
     }
 
@@ -62,7 +61,7 @@ public class LocationAlarm extends BroadcastReceiver {
                 bestLocation = l;
         }
         if (bestLocation != null)
-            Toast.makeText(context, "Location is (" + bestLocation.getLatitude() + ", " + bestLocation.getLongitude() + ")", Toast.LENGTH_SHORT).show();
+            Log.d(Utilities.TAG, "(" + bestLocation.getLatitude() + ", " + bestLocation.getLongitude() + ")");
         else
             Toast.makeText(context, "Location not found :(", Toast.LENGTH_SHORT).show();
     }
