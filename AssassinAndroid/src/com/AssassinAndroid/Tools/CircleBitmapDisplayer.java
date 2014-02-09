@@ -8,7 +8,7 @@ import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.imageaware.ImageViewAware;
 
 /**
- * User: AnubhawAradiusa
+ * User: AnubhawArya
  * Date: 2/8/14
  * Time: 12:25 AM
  */

@@ -17,11 +17,14 @@ import android.widget.TextView;
 import com.AssassinAndroid.AsyncTasks.KillAsyncTask;
 import com.AssassinAndroid.AsyncTasks.PowerUpAsyncTask;
 import com.AssassinAndroid.AsyncTasks.TargetAsyncTask;
+import com.AssassinAndroid.AsyncTasks.TargetLocationAsyncTask;
 import com.AssassinAndroid.Tools.Utilities;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +43,7 @@ public class TargetActivity extends Activity {
     Button mKill;
     GoogleMap map;
     File mKillPic;
+    public static LatLng mLatLng;
     View.OnClickListener mPowerUpOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             v.setVisibility(View.GONE);
@@ -48,6 +52,7 @@ public class TargetActivity extends Activity {
             if (v == mRadar) {
                 new PowerUpAsyncTask(TargetActivity.this).execute("0");
                 editor.putLong(Utilities.RADAR, new Date().getTime());
+                r.run();
             } else if (v == mInvisibility) {
                 new PowerUpAsyncTask(TargetActivity.this).execute("1");
                 editor.putLong(Utilities.INVISIBILITY, new Date().getTime());
@@ -171,4 +176,27 @@ public class TargetActivity extends Activity {
         captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mKillPic));
         startActivityForResult(captureIntent, 1234);
     }
+
+    final Runnable r = new Runnable() {
+        Marker marker;
+
+        public void run() {
+            try {
+                new TargetLocationAsyncTask(TargetActivity.this).execute();
+                if (marker == null)
+                    marker = map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Target"));
+                if (mLatLng != null) {
+                    marker.setPosition(mLatLng);
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+                }
+                if (new Date().getTime() - Utilities.getSharedPreferences(TargetActivity.this).getLong(Utilities.RADAR, 0) > 86400000 * 4){
+                    Utilities.getSharedPreferences(TargetActivity.this).edit().remove(Utilities.RADAR).commit();
+                }
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
 }

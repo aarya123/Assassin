@@ -91,8 +91,9 @@ public class RegisterAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
             String userId = o.getString("userid");
             Intent intent = new Intent(context, TargetActivity.class);
             intent.putExtra("user_id", userId);
+            Utilities.userId = userId;
             SharedPreferences settings = Utilities.getSharedPreferences(context);
-            settings.edit().putString("user_id", Utilities.userId).commit();
+            settings.edit().putString("user_id", userId).commit();
             context.startActivity(intent);
         } catch (JSONException ex) {
             ex.printStackTrace();

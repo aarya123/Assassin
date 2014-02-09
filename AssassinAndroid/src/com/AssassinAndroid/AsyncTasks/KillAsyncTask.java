@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
  * Date: 2/9/14
  * Time: 9:42 AM
  */
-public class KillAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
+public class KillAsyncTask extends AsyncTask<File, Integer, JSONObject> {
 
     Context context;
 
@@ -37,15 +37,15 @@ public class KillAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
             cancel(true);
     }
 
-    protected JSONObject doInBackground(Object... params) {
+    protected JSONObject doInBackground(File... params) {
         if (isCancelled())
             return null;
         try {
             MultipartEntity entity = new MultipartEntity();
             entity.addPart("userid", new StringBody(Utilities.userId));
             entity.addPart("do", new StringBody("kill"));
-            entity.addPart("killpic",new FileBody((File) params[0]));
-            HttpPost hp = new HttpPost(Utilities.API_URL + "register.php");
+            entity.addPart("killpic",new FileBody( params[0]));
+            HttpPost hp = new HttpPost(Utilities.API_URL + "target.php");
             hp.setEntity(entity);
             HttpResponse hr = new DefaultHttpClient().execute(hp);
             return new JSONObject(EntityUtils.toString(hr.getEntity()));
@@ -63,6 +63,11 @@ public class KillAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
         if (o == null) {
             Toast.makeText(context, "Problem getting target!", Toast.LENGTH_SHORT).show();
             return;
+        }
+        try {
+            Toast.makeText(context,o.getString("msg"),Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         Log.d(Utilities.TAG, o.toString());
     }

@@ -54,6 +54,7 @@ public class TargetAsyncTask extends AsyncTask<String, Integer, JSONObject> {
             Toast.makeText(activity, "Problem getting target!", Toast.LENGTH_SHORT).show();
             return;
         }
+        Log.d(Utilities.TAG, o.toString());
         try {
             TargetActivity.mName.setText(o.getString("name"));
             TargetActivity.mSex.setText(o.getString("sex"));
@@ -67,7 +68,6 @@ public class TargetAsyncTask extends AsyncTask<String, Integer, JSONObject> {
                     TargetActivity.imageURLs.add(array.getString(i));
             Utilities.getImageLoader().displayImage(TargetActivity.imageURLs.get(0), TargetActivity.mTargetImage, Utilities.circleOptions);
         } catch (JSONException e) {
-            Log.d(Utilities.TAG, o.toString());
             e.printStackTrace();
         }
     }
