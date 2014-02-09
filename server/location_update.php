@@ -6,6 +6,7 @@
 	}
 	try {
 		$dbh = new PDO($conn_str, $user, $password);
+		// Prevent sending of location if invisibility powerup is activated
 		if (!array_key_exists('powerup', $_POST) || array('powerup', $_POST) != 0) {
 			$stmt = $dbh->prepare('UPDATE users SET current_latitude = :latitude, current_longitude = :longitude WHERE user_id = :user_id');
 			$stmt->bindParam(':latitude', $_POST['latitude']);
