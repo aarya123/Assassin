@@ -1,4 +1,4 @@
-<?
+<? /*
 $uploaddir = $photos;
 if (!isset($_FILES)) {
 	print json_encode(array('error' => 'No files recieved'));
@@ -50,5 +50,7 @@ if (!isset($_FILES)) {
 	$img->setImageFormat('bmp');
 	$img->writeImage($uploadpath);
 	$img->destroy();
-}
+} /* */
+$userid = 
+// We're assuming that the kill code works and 
 ?>
