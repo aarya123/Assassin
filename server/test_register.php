@@ -6,7 +6,7 @@
 	<input type='hidden' name='age' value='1'>
 	<input type='hidden' name='race' value='tmp'>
 	<input type='hidden' name='height' value='1'>
-	<input type='hidden' name='locations' value='1,1'>
+	<input type='hidden' name='locations' value='g'>
 	Send these files:<br />
 	<input name="train_file1" type="file" /><br />
 	<input name="train_file2" type="file" /><br />
