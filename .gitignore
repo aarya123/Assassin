@@ -2,6 +2,9 @@
 *.apk
 *.ap_
 
+#swap
+*.swp
+
 # files for the dex VM
 *.dex
 
