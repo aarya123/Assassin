@@ -1,12 +1,12 @@
 <?php
-	include_once('db.php');
+	include_once('lib.php');
 	include_once('gcm.php');
-	if(!array_key_exists('user_id', $_POST)) {
-		print json_encode(array('error' => 'usage: post user_id'));
+	if(!array_key_exists('userid', $_POST)) {
+		print json_encode(array('error' => 'usage: post userid'));
 	}
 	try {
 		$dbh = new PDO($conn_str, $user, $password);
-		$result = messageUser($dbh, $_POST['user_id']);
+		$result = messageUser($dbh, $_POST['userid']);
 		print $result;
 
 		if(array_key_exists('powerup', $_POST)) {
@@ -16,7 +16,7 @@
 				// Find and message all hunters
 				$sql = 'SELECT id FROM users';
 				while($row = fetch_assoc(mysql_query($sql))) {
-					$target = 'SELECT target FROM users WHERE userid= :user_id';
+					$target = 'SELECT target FROM users WHERE userid= :userid';
 					if($target == $userid) {
 						messageUser($dbh, $_POST['$row[id]'], ['Your target activated an invisibility powerup!']);
 					}
@@ -29,12 +29,12 @@
 				// Get target longitude & latitude from database
 				$sql = 'SELECT id FROM users';
 				while($row = fetch_assoc(mysql_query($sql))) {
-					$target_id = 'SELECT id FROM users WHERE user_id = :user_id';
+					$target_id = 'SELECT id FROM users WHERE userid = :userid';
 					if($target_id == $target) {
 						$longitude = mysql_fetch_row('longitude');
 						$latitude = mysql_fetch_row('latitude');
 						// Push target location to device
-						gcmPush($longitude, $latitude);
+						messageUser($dbh,$_POST['userid'],array($longitude, $latitude));
 					}
 					break;
 				}

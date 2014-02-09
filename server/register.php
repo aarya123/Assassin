@@ -48,11 +48,12 @@ catch(PDOException $e) {
 
 // Begin file upload handling
 //print_r($_FILES);
- 
+//echo "Gonna start"
 $uploaddir = $photos;
 if (!isset($_FILES)) {
 	print json_encode(array('error' => 'No files recieved'));
 } else {
+	//echo "Got files";
 	$trainingIds = array();
     foreach ($_FILES as $file) {
 		$extension = end(explode(".", $file["name"]));
@@ -71,8 +72,9 @@ if (!isset($_FILES)) {
 			print json_encode(array('error' => $stmt->errorInfo()));
 			exit();
 		}
-		$trainingIds[] = $id;
+		
 		$uploadpath = $uploaddir.$id . '.bmp';
+		$trainingFiles[] = $uploadpath;
 		move_uploaded_file($path,$uploadpath);
 		$img = new Imagick($uploadpath);
 		$ort = $img->getImageProperty('Exif:Orientation');
@@ -95,12 +97,16 @@ if (!isset($_FILES)) {
 		}
 		
 		//$img->rotateImage(new ImagickPixel('none'),90);
-		//$img->scaleImage(640,853);
-		//$img->setImageColorspace(255); 
+		$img->scaleImage(640,853);
+		$img->setImageColorspace(255); 
 		$img->setCompression(Imagick::COMPRESSION_NO);
 		$img->setImageFormat('bmp');
 		$img->writeImage($uploadpath);
 		$img->destroy();
 	}
+	
+	//echo "About to call the trainer<br>";
+	// Now call the trainer on the files
+	//train($userid,$trainingFiles);
 }
 ?>
