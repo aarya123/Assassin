@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/var/www/Assassin/server/compare/Compare.cpp
+opencv2/core/core.hpp
+/var/www/Assassin/server/compare/opencv2/core/core.hpp
+opencv2/contrib/contrib.hpp
+/var/www/Assassin/server/compare/opencv2/contrib/contrib.hpp
+opencv2/highgui/highgui.hpp
+/var/www/Assassin/server/compare/opencv2/highgui/highgui.hpp
+iostream
+-
+iomanip
+-
+fstream
+-
+sstream
+-
+string
+-
+sys/types.h
+-
+dirent.h
+-
+libgen.h
+-
+

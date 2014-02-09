@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/boilermake/DisplayImage.cpp
+stdio.h
+-
+opencv2/opencv.hpp
+-
+opencv/highgui.h
+-
+
