@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import org.apache.http.HttpResponse;
@@ -55,16 +56,18 @@ public class RegisterAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
             File two = (File) params[7];
             File three = (File) params[8];
             String location = (String) params[9];
+            String name = (String) params[10];
             entity.addPart("email_address", new StringBody(email));
             entity.addPart("password", new StringBody(password));
             entity.addPart("sex", new StringBody(sex));
             entity.addPart("age", new StringBody(age));
             entity.addPart("race", new StringBody(race));
             entity.addPart("height", new StringBody(height));
-            entity.addPart("location", new StringBody(location));
+            entity.addPart("locations", new StringBody(location));
             entity.addPart("image1", new FileBody(one));
             entity.addPart("image2", new FileBody(two));
             entity.addPart("image3", new FileBody(three));
+            entity.addPart("name", new StringBody(name));
             HttpPost hp = new HttpPost(Utilities.API_URL + "register.php");
             hp.setEntity(entity);
             HttpResponse hr = new DefaultHttpClient().execute(hp);
@@ -88,6 +91,8 @@ public class RegisterAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
             String userId = o.getString("userid");
             Intent intent = new Intent(context, TargetActivity.class);
             intent.putExtra("user_id", userId);
+            SharedPreferences settings = Utilities.getSharedPreferences(context);
+            settings.edit().putString("user_id", Utilities.userId).commit();
             context.startActivity(intent);
         } catch (JSONException ex) {
             ex.printStackTrace();

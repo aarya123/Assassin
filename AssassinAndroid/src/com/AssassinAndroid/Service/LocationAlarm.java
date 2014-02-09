@@ -14,9 +14,11 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
+import com.AssassinAndroid.AsyncTasks.LocationAsyncTask;
 import com.AssassinAndroid.Tools.Utilities;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,9 +44,34 @@ public class LocationAlarm extends BroadcastReceiver {
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         String messageType = gcm.getMessageType(intent);
         if (!extras.isEmpty()) {
-            if (GoogleCloudMessaging.
-                    MESSAGE_TYPE_MESSAGE.equals(messageType)) {
+            if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 Log.i(Utilities.TAG, "Received: " + extras.toString());
+                if (extras.getString("msg").equals(Utilities.RADAR)) {
+                    Utilities.getSharedPreferences(context).edit().putLong("OPP_" + Utilities.RADAR, new Date().getTime()).commit();
+                    AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    Intent i = new Intent(context, LocationAlarm.class);
+                    PendingIntent pi = PendingIntent.getBroadcast(context, 1234, i, 0);
+                    am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000, pi); //Every second
+                } else if (extras.getString("msg").equals(Utilities.INVISIBILITY)) {
+                    Utilities.getSharedPreferences(context).edit().putLong("OPP_" + Utilities.RADAR, new Date().getTime()).commit();
+                    AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    Intent i = new Intent(context, LocationAlarm.class);
+                    PendingIntent pi = PendingIntent.getBroadcast(context, 1234, i, 0);
+                    am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * 1440, pi); // One day
+                }
+            }
+        } else {
+            if (Utilities.getSharedPreferences(context).contains("OPP_" + Utilities.RADAR)) {
+                if (new Date().getTime() - Utilities.getSharedPreferences(context).getLong("OPP_" + Utilities.RADAR, 0) > 1200000) {
+                    Utilities.getSharedPreferences(context).edit().remove("OPP_" + Utilities.RADAR).commit();
+                    setLocationAlarm(context);
+                }
+            }
+            if (Utilities.getSharedPreferences(context).contains("OPP_" + Utilities.INVISIBILITY)) {
+                if (new Date().getTime() - Utilities.getSharedPreferences(context).getLong("OPP_" + Utilities.INVISIBILITY, 0) > 86400000) {
+                    Utilities.getSharedPreferences(context).edit().remove("OPP_" + Utilities.INVISIBILITY).commit();
+                    setLocationAlarm(context);
+                }
             }
         }
     }
@@ -61,7 +88,7 @@ public class LocationAlarm extends BroadcastReceiver {
                 bestLocation = l;
         }
         if (bestLocation != null)
-            Log.d(Utilities.TAG, "(" + bestLocation.getLatitude() + ", " + bestLocation.getLongitude() + ")");
+            new LocationAsyncTask(context).execute(bestLocation);
         else
             Log.d(Utilities.TAG, "Location not found :(");
     }

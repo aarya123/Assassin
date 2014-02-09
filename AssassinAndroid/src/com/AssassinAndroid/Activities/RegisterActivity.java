@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class RegisterActivity extends Activity {
 
-    EditText mEmail, mPassword, mConfirmPassword, mAge, mRace, mFeet, mInches, mLocation;
+    EditText mEmail, mPassword, mConfirmPassword, mAge, mRace, mFeet, mInches, mLocation,mName;
     TextView mErrorText;
     RadioButton mMale, mFemale;
     ImageView mImageOne, mImageTwo, mImageThree;
@@ -47,7 +47,7 @@ public class RegisterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-        Utilities.init(this);
+        Utilities.setupImageLoader(this);
         mEmail = (EditText) findViewById(R.id.mEmail);
         mPassword = (EditText) findViewById(R.id.mPassword);
         mConfirmPassword = (EditText) findViewById(R.id.mConfirmPassword);
@@ -62,6 +62,7 @@ public class RegisterActivity extends Activity {
         mImageTwo = (ImageView) findViewById(R.id.mImageTwo);
         mImageThree = (ImageView) findViewById(R.id.mImageThree);
         mLocation = (EditText) findViewById(R.id.mLocation);
+        mName= (EditText) findViewById(R.id.mName);
         mImageOne.setTag(false);
         mImageTwo.setTag(false);
         mImageThree.setTag(false);
@@ -69,7 +70,7 @@ public class RegisterActivity extends Activity {
         mImageLayout.setOnClickListener(mImageOnClickListener);
         findViewById(R.id.mRegister).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String email = "", password = "", race = "", gender = "", location = "";
+                String email = "", password = "", race = "", gender = "", location = "",name;
                 int age, feet, inches;
                 if (mEmail.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
                     email = mEmail.getText().toString();
@@ -132,8 +133,14 @@ public class RegisterActivity extends Activity {
                     mErrorText.setText("Need photo #3");
                     return;
                 }
+                if (!mName.getText().toString().equals(""))
+                    name = mName.getText().toString();
+                else {
+                    mErrorText.setText("Invalid Name");
+                    return;
+                }
                 mErrorText.setText("");
-                new RegisterAsyncTask(RegisterActivity.this).execute(email, password, gender, age + "", race, (feet * 12 + inches) + "", one, two, three, location);
+                new RegisterAsyncTask(RegisterActivity.this).execute(email, password, gender, age + "", race, (feet * 12 + inches) + "", one, two, three, location,name);
             }
         });
     }

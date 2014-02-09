@@ -49,6 +49,7 @@ public class Utilities {
     private static boolean initialized = false;
     public static final String RADAR = "RADAR";
     public static final String INVISIBILITY = "INVISIBILITY";
+    public static final String LOCATION = "LOCATION";
     public static final DisplayImageOptions circleOptions = new DisplayImageOptions.Builder().displayer(new CircleBitmapDisplayer()).build();
 
     public static boolean isNetworkAvailable(Context context) {
@@ -76,7 +77,7 @@ public class Utilities {
         initialized = true;
     }
 
-    private static void setupImageLoader(Context context) {
+    public static void setupImageLoader(Context context) {
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().
                 cacheInMemory(true).cacheOnDisc(true).build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)

@@ -3,15 +3,18 @@ package com.AssassinAndroid.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.AssassinAndroid.AsyncTasks.KillAsyncTask;
 import com.AssassinAndroid.AsyncTasks.PowerUpAsyncTask;
 import com.AssassinAndroid.AsyncTasks.TargetAsyncTask;
 import com.AssassinAndroid.Tools.Utilities;
@@ -20,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,8 +39,7 @@ public class TargetActivity extends Activity {
     public static ArrayList<String> imageURLs = new ArrayList<String>();
     Button mKill;
     GoogleMap map;
-    Bitmap mKillBitmap;
-    private static final int CAMERA_REQUEST = 1888;
+    File mKillPic;
     View.OnClickListener mPowerUpOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             v.setVisibility(View.GONE);
@@ -56,8 +59,7 @@ public class TargetActivity extends Activity {
     };
     View.OnClickListener mKillOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            openImageIntent();
         }
     };
     LocationListener mLocationListener = new LocationListener() {
@@ -107,7 +109,7 @@ public class TargetActivity extends Activity {
         mInvisibility.setOnClickListener(mPowerUpOnClickListener);
         mTargetImage.setOnClickListener(mTargetOnClickListener);
         Utilities.init(this);
-        new TargetAsyncTask(this).execute("get");
+        new TargetAsyncTask(this).execute();
         Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage, Utilities.circleOptions);
         setupMap();
         if (Utilities.getSharedPreferences(this).contains(Utilities.RADAR)) {
@@ -151,9 +153,22 @@ public class TargetActivity extends Activity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            mKillBitmap = (Bitmap) data.getExtras().get("data");
-            mTargetImage.setImageBitmap(mKillBitmap);
+        if (resultCode == RESULT_OK && requestCode == 1234) {
+            final boolean isCamera;
+            isCamera = data == null || MediaStore.ACTION_IMAGE_CAPTURE.equals(data.getAction()) || "inline-data".equals(data.getAction());
+            if (isCamera) {
+                new KillAsyncTask(this).execute(mKillPic);
+            }
         }
+    }
+
+    private void openImageIntent() {
+        // Camera.
+        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        File parentDirectory = new File(Environment.getExternalStorageDirectory() + File.separator + "Assassin" + File.separator);
+        parentDirectory.mkdirs();
+        mKillPic = new File(parentDirectory, "IMG_" + (int) (Math.random() * 3451) + ".jpg");
+        captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mKillPic));
+        startActivityForResult(captureIntent, 1234);
     }
 }

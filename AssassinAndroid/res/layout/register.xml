@@ -46,6 +46,12 @@
 					android:ems="10"
 					android:hint="Confirm Password"
 					android:id="@+id/mConfirmPassword"/>
+			<EditText
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:singleLine="true"
+					android:hint="Full Name"
+					android:id="@+id/mName"/>
 			<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
