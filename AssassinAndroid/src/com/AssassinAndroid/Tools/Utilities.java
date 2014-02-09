@@ -21,10 +21,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -35,7 +37,7 @@ import java.util.Scanner;
  */
 public class Utilities {
 
-    public static final String API_URL = "http://54.201.183.199/";
+    public static final String API_URL = "http://moneypicsapp.com/Assassin/server/";
     private static ImageLoader mImageLoader;
 
     public static final String PROPERTY_REG_ID = "registration_id";
@@ -44,6 +46,9 @@ public class Utilities {
     static GoogleCloudMessaging gcm;
     static String regid;
     public static String userId;
+    private static boolean initialized = false;
+    public static final String RADAR = "RADAR";
+    public static final String INVISIBILITY = "INVISIBILITY";
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -56,15 +61,18 @@ public class Utilities {
     }
 
     public static void init(Context context) {
-        setupImageLoader(context);
-        setupAlarms(context);
-        if (checkPlayServices(context)) {
-            gcm = GoogleCloudMessaging.getInstance(context);
-            regid = getRegistrationId(context);
-            if (regid.isEmpty())
-                registerInBackground(context);
-        } else
-            Log.i(TAG, "No valid Google Play Services APK found.");
+        if (!initialized) {
+            setupImageLoader(context);
+            setupAlarms(context);
+            if (checkPlayServices(context)) {
+                gcm = GoogleCloudMessaging.getInstance(context);
+                regid = getRegistrationId(context);
+                if (regid.isEmpty())
+                    registerInBackground(context);
+            } else
+                Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+        initialized = true;
     }
 
     private static void setupImageLoader(Context context) {
@@ -156,16 +164,16 @@ public class Utilities {
 
 
     private static void sendRegistrationIdToBackend() {
-        //TODO Send to website
+        try {
+            List<NameValuePair> loginParams = new ArrayList<NameValuePair>(2);
+            loginParams.add(new BasicNameValuePair("user_id", userId));
+            loginParams.add(new BasicNameValuePair("registration_id", regid));
+            Utilities.getResponse(Utilities.API_URL + "gcm_register_id.php", loginParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Stores the registration ID and app versionCode in the application's
-     * {@code SharedPreferences}.
-     *
-     * @param context application's context.
-     * @param regId   registration ID
-     */
     private static void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();

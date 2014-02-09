@@ -23,15 +23,15 @@ public class CircleBitmapDisplayer implements BitmapDisplayer {
 
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
         final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
         float radius = bitmap.getWidth() / 2f < bitmap.getHeight() / 2f ? bitmap.getWidth() / 2f : bitmap.getHeight() / 2f;
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        Bitmap output = Bitmap.createBitmap(Math.round(radius*2f), Math.round(radius*2f), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
         RoundRectShape rrs = new RoundRectShape(new float[]{radius, radius, radius, radius, radius, radius, radius, radius}, null, null);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setAntiAlias(true);
         paint.setColor(0xFF000000);
-        rrs.resize(radius*2f, radius*2f);
+        rrs.resize(radius * 2f, radius * 2f);
         rrs.draw(canvas, paint);
         paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);

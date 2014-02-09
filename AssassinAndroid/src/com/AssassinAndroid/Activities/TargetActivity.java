@@ -2,6 +2,7 @@ package com.AssassinAndroid.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,9 +16,13 @@ import android.widget.TextView;
 import com.AssassinAndroid.AsyncTasks.PowerUpAsyncTask;
 import com.AssassinAndroid.Tools.CircleBitmapDisplayer;
 import com.AssassinAndroid.Tools.Utilities;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+
+import java.util.Date;
 
 /**
  * User: AnubhawArya
@@ -27,7 +32,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 public class TargetActivity extends Activity {
 
     ImageView mTargetImage, mRadar, mInvisibility;
-    TextView mName, mSex, mRace, mHeight, mAge, mLocation, mFreqLocs;
+    TextView mName, mSex, mRace, mHeight, mAge, mLocation;
     Button mKill;
     GoogleMap map;
     Bitmap mKillBitmap;
@@ -35,10 +40,16 @@ public class TargetActivity extends Activity {
     View.OnClickListener mPowerUpOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             v.setVisibility(View.GONE);
-            if (v == mRadar)
+            SharedPreferences prefs = Utilities.getSharedPreferences(TargetActivity.this);
+            SharedPreferences.Editor editor = prefs.edit();
+            if (v == mRadar) {
                 new PowerUpAsyncTask(TargetActivity.this).execute("0");
-            else if (v == mInvisibility)
+                editor.putLong(Utilities.RADAR, new Date().getTime());
+            } else if (v == mInvisibility) {
                 new PowerUpAsyncTask(TargetActivity.this).execute("1");
+                editor.putLong(Utilities.INVISIBILITY, new Date().getTime());
+            }
+            editor.commit();
         }
     };
     View.OnClickListener mKillOnClickListener = new View.OnClickListener() {
@@ -76,7 +87,6 @@ public class TargetActivity extends Activity {
         mHeight = (TextView) findViewById(R.id.mHeight);
         mAge = (TextView) findViewById(R.id.mAge);
         mLocation = (TextView) findViewById(R.id.mLocation);
-        mFreqLocs = (TextView) findViewById(R.id.mFreqLocs);
         mKill = (Button) findViewById(R.id.mKill);
         mRadar = (ImageView) findViewById(R.id.mRadar);
         mInvisibility = (ImageView) findViewById(R.id.mInvisibility);
@@ -88,14 +98,44 @@ public class TargetActivity extends Activity {
         Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage,
                 new DisplayImageOptions.Builder().displayer(new CircleBitmapDisplayer()).build());
         setupMap();
+        if (Utilities.getSharedPreferences(this).contains(Utilities.RADAR)) {
+            if (new Date().getTime() - Utilities.getSharedPreferences(this).getLong(Utilities.RADAR, 0) > 86400000 * 4)
+                Utilities.getSharedPreferences(this).edit().remove(Utilities.RADAR).commit();
+            else
+                mRadar.setVisibility(View.GONE);
+        }
+        if (Utilities.getSharedPreferences(this).contains(Utilities.INVISIBILITY)) {
+            if (new Date().getTime() - Utilities.getSharedPreferences(this).getLong(Utilities.INVISIBILITY, 0) > 86400000 * 3)
+                Utilities.getSharedPreferences(this).edit().remove(Utilities.INVISIBILITY).commit();
+            else
+                mInvisibility.setVisibility(View.GONE);
+        }
+        if (mRadar.getVisibility() == mInvisibility.getVisibility() && mInvisibility.getVisibility() == View.GONE)
+            findViewById(R.id.mPowerUpText).setVisibility(View.GONE);
     }
 
     private void setupMap() {
         map.setMyLocationEnabled(true);
-        map.getUiSettings().setMyLocationButtonEnabled(true);
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 10, 10, mLocationListener);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 10, 10, mLocationListener);
+        Location nLoc = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location gLoc = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (gLoc != null && nLoc != null) {
+            if (gLoc.getAccuracy() > nLoc.getAccuracy()) {
+                LatLng mLatLng = new LatLng(gLoc.getLatitude(), gLoc.getLongitude());
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+            } else {
+                LatLng mLatLng = new LatLng(nLoc.getLatitude(), nLoc.getLongitude());
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+            }
+        } else if (gLoc == null && nLoc != null) {
+            LatLng mLatLng = new LatLng(nLoc.getLatitude(), nLoc.getLongitude());
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+        } else if (nLoc == null && gLoc != null) {
+            LatLng mLatLng = new LatLng(gLoc.getLatitude(), gLoc.getLongitude());
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -16,10 +16,12 @@
 				android:layout_height="match_parent"
 				android:paddingLeft="40dp"
 				android:paddingRight="40dp"
+				android:paddingBottom="20dp"
 				android:gravity="center">
 			<ImageView
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
+					android:layout_marginBottom="15dp"
 					android:id="@+id/mTargetImage"/>
 			<LinearLayout
 					android:orientation="horizontal"
@@ -153,28 +155,6 @@
 						android:textSize="9pt"
 						android:id="@+id/mLocation"/>
 			</LinearLayout>
-			<LinearLayout
-					android:orientation="horizontal"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:gravity="center">
-				<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="Frequented Locations:"
-						android:textSize="9pt"
-						android:textStyle="bold"/>
-				<View
-						android:layout_height="0dp"
-						android:layout_width="0dp"
-						android:layout_weight="1"/>
-				<TextView
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="Locations"
-						android:textSize="9pt"
-						android:id="@+id/mFreqLocs"/>
-			</LinearLayout>
 			<Button
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -184,13 +164,16 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="Power Ups"
-					android:id="@+id/textView" android:textStyle="bold" android:textSize="9pt"
+					android:id="@+id/mPowerUpText"
+					android:textStyle="bold"
+					android:textSize="9pt"
 					android:layout_margin="5dp"/>
 			<LinearLayout
 					android:orientation="horizontal"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:gravity="center">
+					android:gravity="center"
+					android:paddingTop="10dp">
 				<ImageView
 						android:layout_width="0dp"
 						android:layout_weight=".5"
