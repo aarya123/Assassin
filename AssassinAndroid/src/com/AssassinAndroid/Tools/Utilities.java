@@ -49,6 +49,7 @@ public class Utilities {
     private static boolean initialized = false;
     public static final String RADAR = "RADAR";
     public static final String INVISIBILITY = "INVISIBILITY";
+    public static final DisplayImageOptions circleOptions = new DisplayImageOptions.Builder().displayer(new CircleBitmapDisplayer()).build();
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

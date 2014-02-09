@@ -36,7 +36,8 @@
 				android:value="AIzaSyAg7wUXprmeFzsSP0Rab1MVXU9Qb1cvKFE"/>
 
 		<activity android:name=".LogInActivity"
-		          android:screenOrientation="portrait">
+		          android:screenOrientation="portrait"
+		          android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
 		          <intent-filter>
 					<action android:name="android.intent.action.MAIN"/>
 					<category android:name="android.intent.category.LAUNCHER"/>
@@ -44,12 +45,12 @@
 		</activity>
 
 		<activity android:name=".TargetActivity"
-		          android:screenOrientation="portrait">
-		</activity>
+		          android:screenOrientation="portrait"
+		          android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"/>
 
 		<activity android:name=".RegisterActivity"
-		          android:screenOrientation="portrait">
-		</activity>
+		          android:screenOrientation="portrait"
+		          android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"/>
 
 		<receiver android:name="com.AssassinAndroid.Service.LocationAlarm"
 		          android:permission="com.google.android.c2dm.permission.SEND">

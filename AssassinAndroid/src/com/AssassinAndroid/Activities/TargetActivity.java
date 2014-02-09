@@ -8,20 +8,19 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.AssassinAndroid.AsyncTasks.PowerUpAsyncTask;
-import com.AssassinAndroid.Tools.CircleBitmapDisplayer;
+import com.AssassinAndroid.AsyncTasks.TargetAsyncTask;
 import com.AssassinAndroid.Tools.Utilities;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -31,8 +30,9 @@ import java.util.Date;
  */
 public class TargetActivity extends Activity {
 
-    ImageView mTargetImage, mRadar, mInvisibility;
-    TextView mName, mSex, mRace, mHeight, mAge, mLocation;
+    public static ImageView mRadar, mInvisibility,mTargetImage;
+    public static TextView mName, mSex, mRace, mHeight, mAge, mLocation;
+    public static ArrayList<String> imageURLs = new ArrayList<String>();
     Button mKill;
     GoogleMap map;
     Bitmap mKillBitmap;
@@ -61,7 +61,8 @@ public class TargetActivity extends Activity {
     LocationListener mLocationListener = new LocationListener() {
 
         public void onLocationChanged(Location location) {
-            Log.d(Utilities.TAG, "(" + location.getLatitude() + ", " + location.getLongitude() + ")");
+            LatLng mLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -74,6 +75,14 @@ public class TargetActivity extends Activity {
 
         public void onProviderDisabled(String provider) {
 
+        }
+    };
+    int imageUrlIterator = 0;
+    View.OnClickListener mTargetOnClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (imageURLs.size() > 0)
+                Utilities.getImageLoader()
+                        .displayImage(imageURLs.get(++imageUrlIterator % imageURLs.size()), mTargetImage,Utilities.circleOptions);
         }
     };
 
@@ -94,9 +103,10 @@ public class TargetActivity extends Activity {
         mKill.setOnClickListener(mKillOnClickListener);
         mRadar.setOnClickListener(mPowerUpOnClickListener);
         mInvisibility.setOnClickListener(mPowerUpOnClickListener);
+        mTargetImage.setOnClickListener(mTargetOnClickListener);
         Utilities.init(this);
-        Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage,
-                new DisplayImageOptions.Builder().displayer(new CircleBitmapDisplayer()).build());
+        new TargetAsyncTask(this).execute("get");
+        Utilities.getImageLoader().displayImage("drawable://" + R.drawable.ezio, mTargetImage,Utilities.circleOptions);
         setupMap();
         if (Utilities.getSharedPreferences(this).contains(Utilities.RADAR)) {
             if (new Date().getTime() - Utilities.getSharedPreferences(this).getLong(Utilities.RADAR, 0) > 86400000 * 4)

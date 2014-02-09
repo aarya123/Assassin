@@ -52,33 +52,31 @@ public class LogInAsyncTask extends AsyncTask<String, Integer, JSONObject> {
         String email = params[0];
         String password = params[1];
         List<NameValuePair> loginParams = new ArrayList<NameValuePair>(2);
-    	loginParams.add(new BasicNameValuePair("email_address", email));
-    	loginParams.add(new BasicNameValuePair("password", password));
-    	try {
-    		return Utilities.getResponse(Utilities.API_URL + "login.php", loginParams);
-    	}
-    	catch(Exception e) {
-    		e.printStackTrace();
-    		return null;
-    	}
-    	
+        loginParams.add(new BasicNameValuePair("email_address", email));
+        loginParams.add(new BasicNameValuePair("password", password));
+        try {
+            return Utilities.getResponse(Utilities.API_URL + "login.php", loginParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     protected void onPostExecute(JSONObject o) {
-    	if(o == null) {
-    		Toast.makeText(context, "Problem logging in!", Toast.LENGTH_SHORT).show();
-    		return;
-    	}
-    	try {
-    		Utilities.userId = o.getString("ok");
-    		SharedPreferences settings = Utilities.getSharedPreferences(context);
-    		settings.edit().putString("user_id", Utilities.userId).commit();
-    		Utilities.startTargetActivity(context);
-    	}
-    	catch(JSONException ex) {
-    		ex.printStackTrace();
-    		Log.e("LoginAsyncTask.onPostExecute", o.optString("error"));
-    		Toast.makeText(context, "Problem logging in! Message " + o.optString("error"), Toast.LENGTH_SHORT).show();
-    	}
+        if (o == null) {
+            Toast.makeText(context, "Problem logging in!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            Utilities.userId = o.getString("ok");
+            SharedPreferences settings = Utilities.getSharedPreferences(context);
+            settings.edit().putString("user_id", Utilities.userId).commit();
+            Utilities.startTargetActivity(context);
+        } catch (JSONException ex) {
+            ex.printStackTrace();
+            Log.e("LoginAsyncTask.onPostExecute", o.optString("error"));
+            Toast.makeText(context, "Problem logging in! Message " + o.optString("error"), Toast.LENGTH_SHORT).show();
+        }
     }
 }

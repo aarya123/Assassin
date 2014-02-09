@@ -61,7 +61,7 @@ public class RegisterAsyncTask extends AsyncTask<Object, Integer, JSONObject> {
             entity.addPart("age", new StringBody(age));
             entity.addPart("race", new StringBody(race));
             entity.addPart("height", new StringBody(height));
-            entity.addPart("locations", new StringBody(location));
+            entity.addPart("location", new StringBody(location));
             entity.addPart("image1", new FileBody(one));
             entity.addPart("image2", new FileBody(two));
             entity.addPart("image3", new FileBody(three));
