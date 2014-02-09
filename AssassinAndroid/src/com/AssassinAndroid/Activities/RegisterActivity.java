@@ -1,5 +1,13 @@
 package com.AssassinAndroid.Activities;
 
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import com.AssassinAndroid.AsyncTasks.RegisterAsyncTask;
 
 import android.app.Activity;
@@ -8,6 +16,12 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+import com.AssassinAndroid.Tools.Utilities;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * User: AnubhawArya
@@ -16,23 +30,24 @@ import android.widget.*;
  */
 public class RegisterActivity extends Activity {
 
-    private static final int CAMERA_REQUEST = 1888;
     EditText mEmail, mPassword, mConfirmPassword, mAge, mRace, mFeet, mInches, mLocation;
     TextView mErrorText;
     RadioButton mMale, mFemale;
     ImageView mImageOne, mImageTwo, mImageThree;
-    Bitmap one, two, three;
+    File one, two, three;
     LinearLayout mImageLayout;
+    Uri[] selectedImageUris = new Uri[3];
+    int i = 0;
     View.OnClickListener mImageOnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            openImageIntent();
         }
     };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        Utilities.init(this);
         mEmail = (EditText) findViewById(R.id.mEmail);
         mPassword = (EditText) findViewById(R.id.mPassword);
         mConfirmPassword = (EditText) findViewById(R.id.mConfirmPassword);
@@ -54,9 +69,7 @@ public class RegisterActivity extends Activity {
         mImageLayout.setOnClickListener(mImageOnClickListener);
         findViewById(R.id.mRegister).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String email = "b@b.b", password = "b", race = "b", gender = "Male", location = "b";
-                int age = 123, feet = 12, inches = 21;
-                /*String email = "", password = "", race = "", gender = "",location="";
+                String email = "", password = "", race = "", gender = "", location = "";
                 int age, feet, inches;
                 if (mEmail.getText().toString().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))
                     email = mEmail.getText().toString();
@@ -118,7 +131,7 @@ public class RegisterActivity extends Activity {
                 } else if (three == null) {
                     mErrorText.setText("Need photo #3");
                     return;
-                }*/
+                }
                 mErrorText.setText("");
                 new RegisterAsyncTask(RegisterActivity.this).execute(email, password, gender, age + "", race, (feet * 12 + inches) + "", one, two, three, location);
             }
@@ -126,21 +139,40 @@ public class RegisterActivity extends Activity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            if (!(Boolean) mImageOne.getTag()) {
-                mImageOne.setTag(true);
-                one = (Bitmap) data.getExtras().get("data");
-                mImageOne.setImageBitmap(one);
-            } else if (!(Boolean) mImageTwo.getTag()) {
-                mImageTwo.setTag(true);
-                two = (Bitmap) data.getExtras().get("data");
-                mImageTwo.setImageBitmap(two);
-            } else if (!(Boolean) mImageThree.getTag()) {
-                mImageThree.setTag(true);
-                three = (Bitmap) data.getExtras().get("data");
-                mImageThree.setImageBitmap(three);
-                mImageLayout.setOnClickListener(null);
-            }
+        if (resultCode == RESULT_OK && requestCode == 1234) {
+            final boolean isCamera;
+            isCamera = data == null || MediaStore.ACTION_IMAGE_CAPTURE.equals(data.getAction()) || "inline-data".equals(data.getAction());
+            if (isCamera)
+                if (i == 0) {
+                    Utilities.getImageLoader().displayImage(selectedImageUris[i].toString(), mImageOne);
+                } else if (i == 1) {
+                    Utilities.getImageLoader().displayImage(selectedImageUris[i].toString(), mImageTwo);
+                } else {
+                    Utilities.getImageLoader().displayImage(selectedImageUris[i].toString(), mImageThree);
+                    mImageLayout.setOnClickListener(null);
+                }
+            i++;
         }
+    }
+
+    private void openImageIntent() {
+        // Camera.
+        final Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        File parentDirectory = new File(Environment.getExternalStorageDirectory() + File.separator + "Assassin" + File.separator);
+        parentDirectory.mkdirs();
+        if (i == 0) {
+            one = new File(parentDirectory, "IMG_" + (int) (Math.random() * 3451) + ".jpg");
+            selectedImageUris[i] = Uri.fromFile(one);
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUris[i]);
+        } else if (i == 1) {
+            two = new File(parentDirectory, "IMG_" + (int) (Math.random() * 3451) + ".jpg");
+            selectedImageUris[i] = Uri.fromFile(two);
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUris[i]);
+        } else {
+            three = new File(parentDirectory, "IMG_" + (int) (Math.random() * 3451) + ".jpg");
+            selectedImageUris[i] = Uri.fromFile(three);
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, selectedImageUris[i]);
+        }
+        startActivityForResult(captureIntent, 1234);
     }
 }

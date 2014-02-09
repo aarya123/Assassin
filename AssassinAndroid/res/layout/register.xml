@@ -17,6 +17,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:inputType="textEmailAddress"
+				android:singleLine="true"
 				android:ems="10"
 				android:hint="Email"
 				android:id="@+id/mEmail"/>
@@ -25,12 +26,14 @@
 				android:layout_height="wrap_content"
 				android:inputType="textPassword"
 				android:ems="10"
+				android:singleLine="true"
 				android:hint="Password"
 				android:id="@+id/mPassword"/>
 		<EditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:inputType="textPassword"
+				android:singleLine="true"
 				android:ems="10"
 				android:hint="Confirm Password"
 				android:id="@+id/mConfirmPassword"/>
@@ -62,6 +65,7 @@
 		<EditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:singleLine="true"
 				android:inputType="numberSigned"
 				android:ems="10"
 				android:id="@+id/mAge"
@@ -71,11 +75,13 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:id="@+id/mRace"
+				android:singleLine="true"
 				android:layout_gravity="center_horizontal"
 				android:hint="Race"/>
 		<EditText
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:singleLine="true"
 				android:id="@+id/mLocation"
 				android:layout_gravity="center_horizontal"
 				android:hint="A place you're usually at"/>
@@ -92,6 +98,7 @@
 					android:layout_height="wrap_content"
 					android:inputType="numberSigned"
 					android:ems="10"
+					android:singleLine="true"
 					android:hint="0"
 					android:id="@+id/mFeet"
 					android:layout_weight="1"/>
@@ -103,6 +110,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:inputType="numberSigned"
+					android:singleLine="true"
 					android:ems="10"
 					android:hint="0"
 					android:id="@+id/mInches"

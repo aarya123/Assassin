@@ -27,7 +27,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 public class TargetActivity extends Activity {
 
     ImageView mTargetImage, mRadar, mInvisibility;
-    TextView mName, mSex, mRace, mHeight, mAge, mLocation, mFreqLocs;
+    TextView mName, mSex, mRace, mHeight, mAge, mLocation;
     Button mKill;
     GoogleMap map;
     Bitmap mKillBitmap;
@@ -76,7 +76,6 @@ public class TargetActivity extends Activity {
         mHeight = (TextView) findViewById(R.id.mHeight);
         mAge = (TextView) findViewById(R.id.mAge);
         mLocation = (TextView) findViewById(R.id.mLocation);
-        mFreqLocs = (TextView) findViewById(R.id.mFreqLocs);
         mKill = (Button) findViewById(R.id.mKill);
         mRadar = (ImageView) findViewById(R.id.mRadar);
         mInvisibility = (ImageView) findViewById(R.id.mInvisibility);

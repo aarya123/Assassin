@@ -67,7 +67,7 @@ public class LocationAlarm extends BroadcastReceiver {
             Toast.makeText(context, "Location not found :(", Toast.LENGTH_SHORT).show();
     }
 
-    public void setLocationAlarm(Context context) {
+    public static void setLocationAlarm(Context context) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(context, LocationAlarm.class);
         PendingIntent pi = PendingIntent.getBroadcast(context, 1234, i, 0);

@@ -35,7 +35,7 @@ import java.util.Scanner;
  */
 public class Utilities {
 
-    public static final String API_URL = "http://54.201.183.199/";
+    public static final String API_URL = "http://moneypicsapp.com/Assassin/server/";
     private static ImageLoader mImageLoader;
 
     public static final String PROPERTY_REG_ID = "registration_id";
@@ -44,6 +44,7 @@ public class Utilities {
     static GoogleCloudMessaging gcm;
     static String regid;
     public static String userId;
+    private static boolean initialized = false;
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -56,15 +57,18 @@ public class Utilities {
     }
 
     public static void init(Context context) {
-        setupImageLoader(context);
-        setupAlarms(context);
-        if (checkPlayServices(context)) {
-            gcm = GoogleCloudMessaging.getInstance(context);
-            regid = getRegistrationId(context);
-            if (regid.isEmpty())
-                registerInBackground(context);
-        } else
-            Log.i(TAG, "No valid Google Play Services APK found.");
+        if (!initialized) {
+            setupImageLoader(context);
+            setupAlarms(context);
+            if (checkPlayServices(context)) {
+                gcm = GoogleCloudMessaging.getInstance(context);
+                regid = getRegistrationId(context);
+                if (regid.isEmpty())
+                    registerInBackground(context);
+            } else
+                Log.i(TAG, "No valid Google Play Services APK found.");
+        }
+        initialized = true;
     }
 
     private static void setupImageLoader(Context context) {
